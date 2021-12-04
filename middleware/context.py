@@ -1,8 +1,8 @@
-
 import os
 
 # This is a bad place for this import
 import pymysql
+
 
 def get_db_info():
     """
@@ -19,19 +19,14 @@ def get_db_info():
             "host": db_host,
             "user": db_user,
             "password": db_password,
-            "cursorclass": pymysql.cursors.DictCursor
-        }
+            "db": "YYDS"
+            }
     else:
         db_info = {
-            #"host": "localhost",
-            #"user": "root",
-            #"password": "123456",
-            #"cursorclass": pymysql.cursors.DictCursor
-
-            "host": "localhost",
-            "user": "dbusercool",
+            "host": "database.cgylrekh9kqs.us-east-2.rds.amazonaws.com",
+            "user": "admin",
             "password": "dbusercool",
-            "cursorclass": pymysql.cursors.DictCursor
+            "db": "YYDS"
         }
 
     return db_info
