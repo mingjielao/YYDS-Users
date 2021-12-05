@@ -18,14 +18,36 @@ class BaseApplicationResource(ABC):
         db_resource = self._get_db_resource()
         db_table_name = self._get_db_table_name()
 
+        if limit is None or int(limit) > 20:
+            limit = "20"
+        if offset is None:
+            offset = "0"
+
         res = db_resource.find_by_template(db_table_name, template, field_list, limit, offset)
         res = self.get_links(res)
-        return res
+
+        result = {}
+        result['data'] = res
+
+        links = []
+        self_link = {"rel": "self", "href": "/api/"+db_table_name+"?" + self.getTemplateLink(template) + self.getFieldListLink(field_list) + self.getPagination(limit, offset)}
+        links.append(self_link)
+
+        next_link = {"rel": "next", "href": "/api/"+db_table_name+"?" + self.getTemplateLink(template) + self.getFieldListLink(field_list) + self.getPagination(limit, str(int(offset)+int(limit)))}
+        links.append(next_link)
+
+        if int(offset)-int(limit) >= 0:
+            prev_link = {"rel": "prev", "href": "/api/"+db_table_name+"?" + self.getTemplateLink(template) + self.getFieldListLink(field_list) + self.getPagination(limit, str(int(offset)-int(limit)))}
+            links.append(prev_link)
+
+        result['links'] = links
+        return result
 
     def create(self, new_resource_data):
         db_resource = self._get_db_resource()
         db_table_name = self._get_db_table_name()
         res = db_resource.create(db_table_name, new_resource_data)
+
         return res
 
     def get_by_resource_id(self, resource_id, field_list):
@@ -81,3 +103,20 @@ class BaseApplicationResource(ABC):
     def _get_key_columns(self):
         result = self._key_columns
         return result
+
+    def getTemplateLink(self, template):
+        result = ""
+        if template is not None and template != {}:
+            for k, v in template.items():
+                result += k + "="
+                result += v + "&"
+        return result
+
+    def getFieldListLink(self, field_list):
+        result = ""
+        if field_list is not None:
+            result += "fields=" + ",".join(field_list)
+        return result
+
+    def getPagination(self, limit, offset):
+        return "&limit="+ limit + "&offset=" + offset

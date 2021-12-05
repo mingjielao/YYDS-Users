@@ -1,5 +1,4 @@
 import pymysql
-import json
 import logging
 
 import middleware.context as context
@@ -31,22 +30,22 @@ class RDBDataResource(BaseDataResource):
         )
         return db_connection
 
-    @classmethod
-    def get_by_prefix(cls, column_name, value_prefix):
-
-        conn = RDBService._get_db_connection()
-        cur = conn.cursor()
-
-        sql = "select * from " + cls.db_schema + "." + cls.table_name + " where " + \
-              column_name + " like " + "'" + value_prefix + "%'"
-        print("SQL Statement = " + cur.mogrify(sql, None))
-
-        res = cur.execute(sql)
-        res = cur.fetchall()
-
-        conn.close()
-
-        return res
+    # @classmethod
+    # def get_by_prefix(cls, column_name, value_prefix):
+    #
+    #     conn = RDBService._get_db_connection()
+    #     cur = conn.cursor()
+    #
+    #     sql = "select * from " + cls.db_schema + "." + cls.table_name + " where " + \
+    #           column_name + " like " + "'" + value_prefix + "%'"
+    #     print("SQL Statement = " + cur.mogrify(sql, None))
+    #
+    #     res = cur.execute(sql)
+    #     res = cur.fetchall()
+    #
+    #     conn.close()
+    #
+    #     return res
 
     def get_by_attribute(self, db_resource, template, field_list):
         wc, args = self._get_where_clause_args(template)
@@ -100,10 +99,8 @@ class RDBDataResource(BaseDataResource):
 
         sql = "select " + proj + " from " + resource_name + " " + wc
 
-        if limit is not None:
-            sql += " limit " + str(limit)
-        if offset is not None:
-            sql += " offset " + str(offset)
+        sql += " limit " + str(limit)
+        sql += " offset " + str(offset)
 
         res = self._run_q(sql, args, fetch=True)
 

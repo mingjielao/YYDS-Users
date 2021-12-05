@@ -25,4 +25,8 @@ class UserResource(BaseApplicationResource):
         new_resource_info["id"] = next_id
         res = super().create(new_resource_info)
 
+        if res == 1:
+            res = {}
+            res["location"] = "/api/user/" + str(next_id)
+
         return res
