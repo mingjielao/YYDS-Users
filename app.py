@@ -94,7 +94,10 @@ def specific_resource(resource_collection, resource_id):
         rsp = Response(json.dumps("Resource not found", default=str), status=404, content_type="application/json")
     elif request_inputs.method == "GET":
         res = svc.get_by_resource_id(resource_id, field_list=request_inputs.fields)
-        rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+        if res == ():
+            rsp = Response(json.dumps("Id not found", default=str), status=404, content_type="application/json")
+        else:
+            rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
     elif request_inputs.method == "PUT":
         res = svc.put_by_resource_id(resource_id, request.get_json())
         rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
