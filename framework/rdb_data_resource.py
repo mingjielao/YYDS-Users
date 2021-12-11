@@ -67,7 +67,7 @@ class RDBDataResource(BaseDataResource):
         wc, args = self._get_where_clause_args(template)
 
         sql = "UPDATE " + db_resource + " SET "
-        sql = sql + " , ".join([ k + "= '"+ v + "'" for k,v in update_data.items()])
+        sql = sql + " , ".join([ k + "= '"+ str(v) + "'" for k,v in update_data.items()])
 
         sql = sql + wc
         res = self._run_q(sql, args, fetch=True)

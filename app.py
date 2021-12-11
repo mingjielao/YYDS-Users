@@ -9,6 +9,8 @@ from middleware.service_factory import ServiceFactory
 from flask_dance.contrib.google import make_google_blueprint, google
 import middleware.security as security
 
+from dynamodb import dynamodb as db
+
 from middleware.notification import NotificationMiddlewareHandler
 
 logging.basicConfig(level=logging.DEBUG)
@@ -31,6 +33,15 @@ blueprint = make_google_blueprint(
     reprompt_consent=True,
     scope=["profile", "email"],
 )
+
+class SetEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        else:
+            return json.JSONEncoder.default(self, obj)
+
+
 app.register_blueprint(blueprint, url_prefix="/login")
 g_bp = app.blueprints.get("google")
 
@@ -120,6 +131,53 @@ def specific_resource(resource_collection, resource_id):
 #         res = linked_svc.get_by_resource_id(str(svc.get_by_resource_id(resource_id, field_list=[field_name])[0][field_name]), field_list=request_inputs.fields)
 #         rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
 #     return rsp
+
+# Return a list of user_id
+@app.route('/api/user/getEvent/<user_id>', methods=['GET'])
+def getEvent(user_id):
+    res = db.get_attribute_set("User-Event", "user_id", "event_id", user_id)
+    rsp = Response(json.dumps(res, cls=SetEncoder), status=200, content_type="application/json")
+
+    return rsp
+
+
+@app.route('/api/addEvent/<user_id>/<event_id>', methods=['POST'])
+def addEvent(user_id, event_id):
+    res = db.add_relation("User-Event", "user_id", "event_id", user_id, event_id)
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+
+    return rsp
+
+
+@app.route('/api/removeEvent/<user_id>/<event_id>', methods=['DELETE'])
+def removeEvent(user_id, event_id):
+    res = db.remove_relation("User-Event", "user_id", "event_id", user_id, event_id)
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+
+    return rsp
+
+@app.route('/api/getGroup/<user_id>', methods=['GET'])
+def getGroup(user_id):
+    res = db.get_attribute_set("User-Group", "user_id", "group_id", user_id)
+    rsp = Response(json.dumps(res, cls=SetEncoder), status=200, content_type="application/json")
+
+    return rsp
+
+
+@app.route('/api/addGroup/<user_id>/<group_id>', methods=['POST'])
+def addGroup(user_id, group_id):
+    res = db.add_relation("User-Group", "user_id", "group_id", user_id, group_id)
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+
+    return rsp
+
+
+@app.route('/api/removeGroup/<user_id>/<group_id>', methods=['DELETE'])
+def removeGroup(user_id, group_id):
+    res = db.remove_relation("Event-Group", "user_id", "group_id", user_id, group_id)
+    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+
+    return rsp
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000)
