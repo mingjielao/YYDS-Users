@@ -70,7 +70,7 @@ def hello_world():
     return '<u>Hello World!</u>'
 
 
-@app.route('/api/<resource_collection>', methods=["GET", "POST"])
+@app.route('/user/<resource_collection>', methods=["GET", "POST"])
 def do_resource_collection(resource_collection):
     request_inputs = RESTContext(request, resource_collection)
     service = ServiceFactory()
@@ -95,7 +95,7 @@ def do_resource_collection(resource_collection):
     return rsp
 
 
-@app.route('/api/<resource_collection>/<resource_id>', methods=["GET", "PUT", "DELETE"])
+@app.route('/user/<resource_collection>/<resource_id>', methods=["GET", "PUT", "DELETE"])
 def specific_resource(resource_collection, resource_id):
     request_inputs = RESTContext(request, resource_collection)
     service = ServiceFactory()
@@ -133,7 +133,7 @@ def specific_resource(resource_collection, resource_id):
 #     return rsp
 
 # Return a list of user_id
-@app.route('/api/user/getEvent/<user_id>', methods=['GET'])
+@app.route('/user/getEvent/<user_id>', methods=['GET'])
 def getEvent(user_id):
     res = db.get_attribute_set("User-Event", "user_id", "event_id", user_id)
     rsp = Response(json.dumps(res, cls=SetEncoder), status=200, content_type="application/json")
@@ -141,7 +141,7 @@ def getEvent(user_id):
     return rsp
 
 
-@app.route('/api/addEvent/<user_id>/<event_id>', methods=['POST'])
+@app.route('/user/addEvent/<user_id>/<event_id>', methods=['POST'])
 def addEvent(user_id, event_id):
     res = db.add_relation("User-Event", "user_id", "event_id", user_id, event_id)
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
@@ -149,14 +149,14 @@ def addEvent(user_id, event_id):
     return rsp
 
 
-@app.route('/api/removeEvent/<user_id>/<event_id>', methods=['DELETE'])
+@app.route('/user/removeEvent/<user_id>/<event_id>', methods=['DELETE'])
 def removeEvent(user_id, event_id):
     res = db.remove_relation("User-Event", "user_id", "event_id", user_id, event_id)
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
 
     return rsp
 
-@app.route('/api/getGroup/<user_id>', methods=['GET'])
+@app.route('/user/getGroup/<user_id>', methods=['GET'])
 def getGroup(user_id):
     res = db.get_attribute_set("User-Group", "user_id", "group_id", user_id)
     rsp = Response(json.dumps(res, cls=SetEncoder), status=200, content_type="application/json")
@@ -164,7 +164,7 @@ def getGroup(user_id):
     return rsp
 
 
-@app.route('/api/addGroup/<user_id>/<group_id>', methods=['POST'])
+@app.route('/user/addGroup/<user_id>/<group_id>', methods=['POST'])
 def addGroup(user_id, group_id):
     res = db.add_relation("User-Group", "user_id", "group_id", user_id, group_id)
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
@@ -172,7 +172,7 @@ def addGroup(user_id, group_id):
     return rsp
 
 
-@app.route('/api/removeGroup/<user_id>/<group_id>', methods=['DELETE'])
+@app.route('/user/removeGroup/<user_id>/<group_id>', methods=['DELETE'])
 def removeGroup(user_id, group_id):
     res = db.remove_relation("Event-Group", "user_id", "group_id", user_id, group_id)
     rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
