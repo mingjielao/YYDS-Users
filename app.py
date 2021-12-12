@@ -117,21 +117,6 @@ def specific_resource(resource_collection, resource_id):
         rsp = Response(json.dumps(res, default=str), status=204, content_type="application/json")
     return rsp
 
-# @app.route('/api/event/<resource_id>/<linked_resource>', methods=["GET"])
-# def linked_resource(resource_id, linked_resource):
-#     request_inputs = RESTContext(request, "event")
-#     service = ServiceFactory()
-#     svc = service.get_service("event")
-#     linked_svc = service.get_service(linked_resource)
-#
-#     if linked_svc is None:
-#         rsp = Response(json.dumps("Linked resource not found", default=str), status=404, content_type="application/json")
-#     elif linked_resource == "eventvenue" or linked_resource == "eventtype" or linked_resource == "eventorganizer":
-#         field_name = linked_resource[5:]+"_id"
-#         res = linked_svc.get_by_resource_id(str(svc.get_by_resource_id(resource_id, field_list=[field_name])[0][field_name]), field_list=request_inputs.fields)
-#         rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
-#     return rsp
-
 # Return a list of user_id
 @app.route('/getEvent/<user_id>', methods=['GET'])
 def getEvent(user_id):
@@ -156,8 +141,8 @@ def removeEvent(user_id, event_id):
 
     return rsp
 
-@app.route('/getGroup/<user_id>', methods=['GET'])
-def getGroup(user_id):
+@app.route('/getGroups/<user_id>', methods=['GET'])
+def getGroups(user_id):
     res = db.get_attribute_set("User-Group", "user_id", "group_id", user_id)
     rsp = Response(json.dumps(res, cls=SetEncoder), status=200, content_type="application/json")
 
