@@ -142,7 +142,7 @@ def removeEvent(user_id, event_id):
     return rsp
 
 @app.route('/getGroups/<user_id>', methods=['GET'])
-def getGroups(user_id):
+def getGroup(user_id):
     res = db.get_attribute_set("User-Group", "user_id", "group_id", user_id)
     rsp = Response(json.dumps(res, cls=SetEncoder), status=200, content_type="application/json")
 
