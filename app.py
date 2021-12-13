@@ -137,7 +137,7 @@ def addEvent(user_id, event_id):
 @app.route('/removeEvent/<user_id>/<event_id>', methods=['DELETE'])
 def removeEvent(user_id, event_id):
     res = db.remove_relation("User-Event", "user_id", "event_id", user_id, event_id)
-    rsp = Response(json.dumps(res, default=str), status=200, content_type="application/json")
+    rsp = Response(json.dumps(res, default=str), status=204, content_type="application/json")
 
     return rsp
 
