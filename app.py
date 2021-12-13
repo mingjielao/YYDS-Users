@@ -118,8 +118,8 @@ def specific_resource(resource_collection, resource_id):
     return rsp
 
 # Return a list of user_id
-@app.route('/getEvent/<user_id>', methods=['GET'])
-def getEvent(user_id):
+@app.route('/getEvents/<user_id>', methods=['GET'])
+def getEvents(user_id):
     res = db.get_attribute_set("User-Event", "user_id", "event_id", user_id)
     rsp = Response(json.dumps(res, cls=SetEncoder), status=200, content_type="application/json")
 
@@ -142,7 +142,7 @@ def removeEvent(user_id, event_id):
     return rsp
 
 @app.route('/getGroups/<user_id>', methods=['GET'])
-def getGroup(user_id):
+def getGroups(user_id):
     res = db.get_attribute_set("User-Group", "user_id", "group_id", user_id)
     rsp = Response(json.dumps(res, cls=SetEncoder), status=200, content_type="application/json")
 
